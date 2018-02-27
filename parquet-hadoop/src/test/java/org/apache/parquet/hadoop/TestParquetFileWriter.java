@@ -52,6 +52,7 @@ import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.MessageTypeParser;
 import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
+import org.apache.parquet.schema.Types;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,8 +102,8 @@ public class TestParquetFileWriter {
   private static final byte[] BYTES4 = { 3, 4, 5, 6 };
   private static final CompressionCodecName CODEC = CompressionCodecName.UNCOMPRESSED;
 
-  private static final BinaryStatistics STATS1 = new BinaryStatistics();
-  private static final BinaryStatistics STATS2 = new BinaryStatistics();
+  private static final org.apache.parquet.column.statistics.Statistics<?> EMPTY_STATS = org.apache.parquet.column.statistics.Statistics
+      .getBuilder(Types.required(PrimitiveTypeName.BINARY).named("test_binary")).build();
 
   private String writeSchema;
 
@@ -151,24 +152,24 @@ public class TestParquetFileWriter {
     w.startBlock(3);
     w.startColumn(C1, 5, CODEC);
     long c1Starts = w.getPos();
-    w.writeDataPage(2, 4, BytesInput.from(BYTES1), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(3, 4, BytesInput.from(BYTES1), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(2, 4, BytesInput.from(BYTES1), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(3, 4, BytesInput.from(BYTES1), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     long c1Ends = w.getPos();
     w.startColumn(C2, 6, CODEC);
     long c2Starts = w.getPos();
-    w.writeDataPage(2, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(3, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(1, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(2, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(3, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(1, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     long c2Ends = w.getPos();
     w.endBlock();
     w.startBlock(4);
     w.startColumn(C1, 7, CODEC);
-    w.writeDataPage(7, 4, BytesInput.from(BYTES3), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(7, 4, BytesInput.from(BYTES3), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     w.startColumn(C2, 8, CODEC);
-    w.writeDataPage(8, 4, BytesInput.from(BYTES4), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(8, 4, BytesInput.from(BYTES4), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     w.endBlock();
     w.end(new HashMap<String, String>());
@@ -231,15 +232,15 @@ public class TestParquetFileWriter {
     w.startBlock(3);
     w.startColumn(C1, 5, CODEC);
     long c1Starts = w.getPos();
-    w.writeDataPage(2, 4, BytesInput.from(BYTES1), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(3, 4, BytesInput.from(BYTES1), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(2, 4, BytesInput.from(BYTES1), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(3, 4, BytesInput.from(BYTES1), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     long c1Ends = w.getPos();
     w.startColumn(C2, 6, CODEC);
     long c2Starts = w.getPos();
-    w.writeDataPage(2, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(3, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(1, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(2, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(3, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(1, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     long c2Ends = w.getPos();
     w.endBlock();
@@ -248,10 +249,10 @@ public class TestParquetFileWriter {
 
     w.startBlock(4);
     w.startColumn(C1, 7, CODEC);
-    w.writeDataPage(7, 4, BytesInput.from(BYTES3), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(7, 4, BytesInput.from(BYTES3), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     w.startColumn(C2, 8, CODEC);
-    w.writeDataPage(8, 4, BytesInput.from(BYTES4), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(8, 4, BytesInput.from(BYTES4), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     w.endBlock();
 
@@ -336,15 +337,15 @@ public class TestParquetFileWriter {
     w.startBlock(3);
     w.startColumn(C1, 5, CODEC);
     long c1Starts = w.getPos();
-    w.writeDataPage(2, 4, BytesInput.from(BYTES1), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(3, 4, BytesInput.from(BYTES1), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(2, 4, BytesInput.from(BYTES1), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(3, 4, BytesInput.from(BYTES1), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     long c1Ends = w.getPos();
     w.startColumn(C2, 6, CODEC);
     long c2Starts = w.getPos();
-    w.writeDataPage(2, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(3, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
-    w.writeDataPage(1, 4, BytesInput.from(BYTES2), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(2, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(3, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(1, 4, BytesInput.from(BYTES2), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     long c2Ends = w.getPos();
     w.endBlock();
@@ -353,10 +354,10 @@ public class TestParquetFileWriter {
 
     w.startBlock(4);
     w.startColumn(C1, 7, CODEC);
-    w.writeDataPage(7, 4, BytesInput.from(BYTES3), STATS1, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(7, 4, BytesInput.from(BYTES3), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     w.startColumn(C2, 8, CODEC);
-    w.writeDataPage(8, 4, BytesInput.from(BYTES4), STATS2, BIT_PACKED, BIT_PACKED, PLAIN);
+    w.writeDataPage(8, 4, BytesInput.from(BYTES4), EMPTY_STATS, BIT_PACKED, BIT_PACKED, PLAIN);
     w.endColumn();
     w.endBlock();
 
